@@ -54,16 +54,16 @@ module Crossfit
             event_range = "#{num_to_alpha[score_column]}#{athlete_rows.first}:#{num_to_alpha[score_column]}#{athlete_rows.last}"
             @worksheet.write("#{num_to_alpha[rank_column]}#{row_num}", "=RANK(#{num_to_alpha[score_column]}#{row_num},#{event_range},#{num_to_alpha[rank_column]}2)") # rank
 
-            @worksheet.write("#{final_score_column}#{row_num}", "=SUM(#{athlete_score_rows(row_num)})") # overall score
-
+            @worksheet.write("#{final_score_column}#{row_num}", "=SUM(#{athlete_rank_rows(row_num)})") # sum of ranks
+            
             final_score_range = "#{final_score_column}#{athlete_rows.first}:#{final_score_column}#{athlete_rows.last}"
-            @worksheet.write("#{final_rank_column}#{row_num}", "=RANK(#{final_score_column}#{row_num}, #{final_score_range}, 1)") # overall rank
+            @worksheet.write("#{final_rank_column}#{row_num}", "=RANK(#{final_score_column}#{row_num}, #{final_score_range}, 1)") # rank of ranks
             last_used_column += 2
           end
         end
       end
       
-      def athlete_score_rows(row_num)
+      def athlete_rank_rows(row_num)
         rank_columns.map{|column| "#{column}#{row_num}"}.flatten.join(",")
       end
       
@@ -84,4 +84,4 @@ module Crossfit
   end
 end
 
-Crossfit::Scorekeeping::Generator.new 10
+Crossfit::Scorekeeping::Generator.new 25, 6
